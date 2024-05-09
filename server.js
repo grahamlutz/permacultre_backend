@@ -7,6 +7,10 @@ const port = process.env.PORT || 5001;
 
 require('dotenv').config();
 
+// DB Setup
+const db = require('./config/db');
+db.testDbConnection();
+
 // Import the routes from routes/index.js
 const routes = require('./routes');
 
@@ -24,6 +28,13 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`)
-});
+db.sq.sync()
+  .then(() => {
+    console.log('Database synced successfully.');
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`)
+    });
+  })
+  .catch((error) => {
+    console.error('Error syncing database:', error);
+  });
