@@ -12,12 +12,12 @@ router.get('/plants/', (req, res) => {
   try {
     const response = getAllPlants()
     .then((response) => {
-      console.log(response);
+      res.json([response])
     });
   } catch (error) {
     console.error('Error fetching plant data:');
   }
-  res.json(['30087']);
+  // res.json(['30087']);
 })
 
 module.exports = router;

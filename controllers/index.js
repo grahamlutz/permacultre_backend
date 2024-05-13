@@ -1,5 +1,7 @@
-const plantController = require('./plantController');
+import plantController from './plantController';
+import userController from './userController';
 
 module.exports = {
-  plantController
+  plantController,
+  userController
 }
