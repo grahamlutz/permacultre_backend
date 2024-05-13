@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const User = require('../models/user');
 
 // User registration
@@ -23,19 +24,23 @@ router.post('/register', async (req, res) => {
 });
 
 // User login
-router.post('/login', (req, res) => {
+router.post('/login', (req, res, next) => {
   passport.authenticate('local', { session: false }, (err, user, info) => {
-    if (err || !user) {
+    console.log('inside passport.authenticate');
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
       return res.status(400).json({ message: info.message });
     }
     req.login(user, { session: false }, (err) => {
       if (err) {
-        res.status(500).json({ message: 'Server error.' });
+        return next(err);
       }
       const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
       res.json({ token });
     });
-  })(req, res);
+  })(req, res, next);
 });
 
 // User logout

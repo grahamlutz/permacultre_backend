@@ -5,10 +5,12 @@ const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const config = require('./config');
 
 // Local Strategy for user login
 passport.use(
   new LocalStrategy(async (username, password, done) => {
+    console.log('inside LocalStrategy');
     try {
       const user = await User.findOne({ username });
       if (!user) {
@@ -30,7 +32,7 @@ passport.use(
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: process.env.JWT_SECRET,
+      secretOrKey: config.JWT_SECRET,
     },
     async (payload, done) => {
       try {
